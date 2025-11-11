@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Signup.css';
+import './Login.css';
 
-function Signup() {
+function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -22,7 +22,7 @@ function Signup() {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:3002/signup', {
+      const response = await fetch('http://localhost:3002/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,10 +37,10 @@ function Signup() {
       const data = await response.json();
       
       if (response.ok) {
-        // Redirect to login after successful signup
-        navigate('/login');
+        // Redirect to dashboard after successful login
+        navigate('/dashboard');
       } else {
-        setError(data.error || 'Signup failed');
+        setError(data.message || 'Login failed');
       }
     } catch (err) {
       setError('Network error, please try again');
@@ -53,12 +53,12 @@ function Signup() {
         <div className="row gx-lg-5 align-items-center mb-5">
           <div className="col-lg-6 mb-5 mb-lg-0" style={{ zIndex: 10 }}>
             <h1 className="my-5 display-5 fw-bold ls-tight heading-text">
-              Start Trading Today <br />
-              <span className="heading-span">with our platform</span>
+              Welcome Back <br />
+              <span className="heading-span">to your trading platform</span>
             </h1>
             <p className="mb-4 opacity-70 subheading-text">
-              Join our trading platform to access advanced trading tools, real-time market data,
-              and a seamless trading experience. Create your account now to start your trading journey.
+              Log in to access your portfolio, monitor your positions, and continue your trading journey
+              with our advanced trading tools and real-time market data.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ function Signup() {
                 <form onSubmit={handleSubmit}>
                   {/* Email input */}
                   <div className="form-outline mb-4">
-                     <label className="form-label">Email address</label>
+                    <label className="form-label">Email address</label>
                     <input
                       type="email"
                       name="email"
@@ -82,7 +82,7 @@ function Signup() {
                       onChange={handleChange}
                       required
                     />
-                   
+                    
                   </div>
 
                   {/* Password input */}
@@ -101,12 +101,12 @@ function Signup() {
 
                   {/* Submit button */}
                   <button type="submit" className="btn btn-primary btn-block mb-4 w-100">
-                    Sign up
+                    Login
                   </button>
 
-                  {/* Login link */}
+                  {/* Signup link */}
                   <div className="text-center">
-                    <p>Already have an account? <a href="/login">Login here</a></p>
+                    <p>Don't have an account? <a href="/signup">Sign up here</a></p>
                   </div>
                 </form>
               </div>
@@ -118,4 +118,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default Login;
