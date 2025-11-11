@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
+const DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL || 'http://localhost:5174';
+
 function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -37,8 +39,8 @@ function Login() {
       const data = await response.json();
       
       if (response.ok) {
-        // Redirect to dashboard after successful login
-        navigate('/dashboard');
+        // Redirect to dashboard home after successful login
+        window.location.href = `${DASHBOARD_URL}/`;
       } else {
         setError(data.message || 'Login failed');
       }
