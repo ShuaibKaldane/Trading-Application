@@ -7,36 +7,34 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid }) => {
+const SellActionWindow = ({ uid }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(0.0);
   const [error, setError] = useState("");
-
   const context = useContext(GeneralContext);
 
-  const handleBuyClick = async () => {
+  const handleSellClick = async () => {
     try {
-      await axios.post("http://localhost:3002/newOrder", {
+      const res = await axios.post("http://localhost:3002/newOrder", {
         name: uid,
         qty: Number(stockQuantity),
         price: Number(stockPrice),
-        mode: "BUY",
+        mode: "SELL",
       });
-      // on success clear any errors, close the window and refresh positions
+      // success: clear errors, close and refresh
       setError("");
-      if (context && context.closeBuyWindow) context.closeBuyWindow();
-      // refresh to get updated positions (simple approach)
+      if (context && context.closeSellWindow) context.closeSellWindow();
       window.location.reload();
     } catch (err) {
-      console.error("Buy request failed", err);
-      // show inline error instead of closing or alerting
-      const msg = err?.response?.data?.message || "Buy failed. Please try again.";
+      console.error("Sell request failed", err);
+      // show inline error instead of alert and keep window open for correction
+      const msg = err?.response?.data?.message || "Sell failed. Please try again.";
       setError(msg);
     }
   };
 
   const handleCancelClick = () => {
-    if (context && context.closeBuyWindow) context.closeBuyWindow();
+    if (context && context.closeSellWindow) context.closeSellWindow();
   };
 
   return (
@@ -75,8 +73,8 @@ const BuyActionWindow = ({ uid }) => {
       <div className="buttons">
         <span>Margin required ₹140.65</span>
         <div>
-          <Link className="btn btn-blue" onClick={handleBuyClick}>
-            Buy
+          <Link className="btn btn-blue" onClick={handleSellClick}>
+            Sell
           </Link>
           <Link to="" className="btn btn-grey" onClick={handleCancelClick}>
             Cancel
@@ -87,4 +85,4 @@ const BuyActionWindow = ({ uid }) => {
   );
 };
 
-export default BuyActionWindow;
+export default SellActionWindow;

@@ -57,14 +57,72 @@ app.get("/allPositions", async (req, res) => {
 });
 
 app.post("/newOrder", async (req, res) => {
-  let newOrder = new OrdersModel({
-    name: req.body.name,
-    qty: req.body.qty,
-    price: req.body.price,
-    mode: req.body.mode,
-  });
-  newOrder.save();
-  res.send("Order save");
+  try {
+    const { name, qty, price, mode } = req.body;
+    if (!name || !qty || !price || !mode)
+      return res.status(400).json({ message: "Missing order fields" });
+
+    // Process BUY
+    if (mode === "BUY") {
+      // find existing position
+      let pos = await PositionsModel.findOne({ name });
+      if (pos) {
+        const oldQty = pos.qty || 0;
+        const oldAvg = pos.avg || 0;
+        const newQty = oldQty + Number(qty);
+        const newAvg = (oldAvg * oldQty + Number(price) * Number(qty)) / newQty;
+        pos.qty = newQty;
+        pos.avg = newAvg;
+        pos.price = Number(price);
+        await pos.save();
+      } else {
+        // create new position
+        const newPos = new PositionsModel({
+          product: "EQUITY",
+          name,
+          qty: Number(qty),
+          avg: Number(price),
+          price: Number(price),
+          net: "",
+          day: "",
+          isLoss: false,
+        });
+        await newPos.save();
+      }
+      const newOrder = new OrdersModel({ name, qty, price, mode });
+      await newOrder.save();
+      return res.json({ message: "Buy order processed" });
+    }
+
+    // Process SELL
+    if (mode === "SELL") {
+      let pos = await PositionsModel.findOne({ name });
+      if (!pos) {
+        return res.status(400).json({ message: "Position not found" });
+      }
+      const available = pos.qty || 0;
+      if (available < Number(qty)) {
+        return res.status(400).json({ message: "Insufficient quantity to sell" });
+      }
+      const newQty = available - Number(qty);
+      if (newQty === 0) {
+        await PositionsModel.deleteOne({ _id: pos._id });
+      } else {
+        pos.qty = newQty;
+        pos.price = Number(price);
+        await pos.save();
+      }
+      const newOrder = new OrdersModel({ name, qty, price, mode });
+      await newOrder.save();
+      return res.json({ message: "Sell order processed" });
+    }
+
+    // Unknown mode
+    return res.status(400).json({ message: "Unknown order mode" });
+  } catch (err) {
+    console.error("/newOrder error", err);
+    return res.status(500).json({ message: "Server error" });
+  }
 });
 
 // Signup: create a new user
