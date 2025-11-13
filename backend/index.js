@@ -24,17 +24,25 @@ app.listen(PORT, async () => {
   }
 });
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:5173",
+  process.env.DASHBOARD_URL || "http://localhost:5174"
+]
 // Allow credentials so frontend can send cookies. In production set a specific origin.
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(bodyParser.json());
 
 // Session + Passport
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "sessionsecret",
+    secret: process.env.SESSION_SECRET ,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // secure should be true in production with HTTPS
+    cookie: { 
+      secure: process.env.NODE_ENV === "production", 
+      httpOnly: true,
+      sameSite: "lax"
+    }, 
   })
 );
 
