@@ -8,5 +8,10 @@ export default defineConfig({
     host: '0.0.0.0',
     port: parseInt(process.env.PORT || '5173'),
     strictPort: false,
+    allowedHosts: [
+      'localhost',
+      '127.0.0.1',
+      'trading-app-frontend-2hhx.onrender.com'
+    ]
   },
 })
