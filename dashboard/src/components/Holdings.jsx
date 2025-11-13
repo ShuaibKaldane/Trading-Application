@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios, { all } from "axios";
 import { VerticalGraph } from "./VerticalGraph";
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+
 const Holdings = () => {
   const [allHoldings, setAllHoldings] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3002/allHoldings").then((res) => {  
+    axios.get(`${BACKEND_URL}/allHoldings`).then((res) => {  
       setAllHoldings(res.data);
     });
   }, []);

@@ -7,6 +7,8 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+
 const SellActionWindow = ({ uid }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   const [stockPrice, setStockPrice] = useState(0.0);
@@ -15,7 +17,7 @@ const SellActionWindow = ({ uid }) => {
 
   const handleSellClick = async () => {
     try {
-      const res = await axios.post("http://localhost:3002/newOrder", {
+      const res = await axios.post(`${BACKEND_URL}/newOrder`, {
         name: uid,
         qty: Number(stockQuantity),
         price: Number(stockPrice),

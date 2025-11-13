@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3002';
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'http://localhost:5173';
+
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -18,15 +21,15 @@ const Menu = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3002/logout", {}, {
+      await axios.post(`${BACKEND_URL}/logout`, {}, {
         credentials: "include",
       });
       // Redirect to frontend homepage after logout
-      window.location.href = "http://localhost:5173/";
+      window.location.href = FRONTEND_URL;
     } catch (err) {
       console.error("Logout failed", err);
       // Still redirect even if logout fails
-      window.location.href = "http://localhost:5173/";
+      window.location.href = FRONTEND_URL;
     }
   };
 
