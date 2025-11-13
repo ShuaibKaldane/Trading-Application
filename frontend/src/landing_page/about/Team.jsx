@@ -14,7 +14,7 @@ function Team() {
             alt=""
             style={{ borderRadius: "100%", width: "60%" }}
           />
-          <h6 className="mt-5">Nithin Kamath</h6>
+          <h6 className="mt-5">Shuaib Kaldane</h6>
           <h5>Founder, CEO</h5>
         </div>
         <div className="col-6 p-5">
